@@ -38,43 +38,44 @@
             z-index: 0;
         }
 
-        /* Cute floating animation for elements */
+        /* Cute floating animation for pet */
         .animate-float {
             animation: float 3s ease-in-out infinite;
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-12px) rotate(2deg); }
+            50% { transform: translateY(-10px) rotate(1.5deg); }
         }
 
         /* Pet wiggle reaction when tapped */
         .pet-wiggle {
-            animation: wiggle 0.5s ease-in-out;
+            animation: wiggle 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97);
         }
 
         @keyframes wiggle {
             0%, 100% { transform: scale(1) rotate(0deg); }
-            25% { transform: scale(1.15) rotate(-10deg); }
-            50% { transform: scale(1.2) rotate(10deg); }
-            75% { transform: scale(1.15) rotate(-5deg); }
+            20% { transform: scale(1.12) rotate(-8deg); }
+            40% { transform: scale(1.15) rotate(8deg); }
+            60% { transform: scale(1.1) rotate(-4deg); }
+            80% { transform: scale(1.05) rotate(4deg); }
         }
 
         /* Smooth transition for button resizing */
         .btn-bounce {
-            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, box-shadow 0.2s ease;
         }
 
-        /* Custom soft shadow glow */
+        /* Custom soft shadows */
         .cute-shadow {
-            box-shadow: 0 12px 30px -8px rgba(255, 107, 129, 0.35);
+            box-shadow: 0 15px 35px -10px rgba(244, 114, 182, 0.3);
         }
 
         .gift-shadow {
             box-shadow: 0 10px 25px -5px rgba(248, 187, 208, 0.8);
         }
 
-        /* Gift 3D Flip Card Animation */
+        /* Perspective for 3D flip effect */
         .perspective-1000 {
             perspective: 1000px;
         }
@@ -97,23 +98,34 @@
             transform: rotateY(180deg);
         }
 
-        /* Heart burst effect particle */
+        /* Floating particle heart animation */
         .particle-heart {
             position: fixed;
             pointer-events: none;
-            animation: floatAndFade 1.2s ease-out forwards;
+            animation: floatAndFade 1.3s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
             z-index: 9999;
         }
 
         @keyframes floatAndFade {
             0% {
                 opacity: 1;
-                transform: translate(0, 0) scale(0.5) rotate(0deg);
+                transform: translate(0, 0) scale(0.6) rotate(0deg);
             }
             100% {
                 opacity: 0;
-                transform: translate(var(--tw-x, 0px), var(--tw-y, -100px)) scale(1.4) rotate(var(--tw-r, 20deg));
+                transform: translate(var(--tw-x, 0px), var(--tw-y, -120px)) scale(1.5) rotate(var(--tw-r, 25deg));
             }
+        }
+
+        /* Modal backdrop transition */
+        .modal-enter {
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+        }
+        .modal-enter-active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
     </style>
 </head>
@@ -123,138 +135,165 @@
     <canvas id="heart-bg"></canvas>
 
     <!-- MAIN APOLOGY SCREEN -->
-    <main id="apology-card" class="relative z-10 w-full max-w-md bg-white/80 backdrop-blur-md rounded-3xl p-6 md:p-8 text-center cute-shadow border-2 border-pink-100 transition-all duration-500 my-auto">
+    <main id="apology-card" class="relative z-10 w-full max-w-md bg-white/85 backdrop-blur-md rounded-3xl p-6 md:p-8 text-center cute-shadow border-2 border-pink-100 transition-all duration-500 my-auto">
         
-        <!-- Interactive Pet Container -->
+        <!-- Interactive Pet SVG Container -->
         <div class="relative inline-block group cursor-pointer" id="pet-container" title="Tap me!">
-            <div class="absolute -inset-2 bg-pink-200/50 rounded-full blur-lg group-hover:bg-pink-300/60 transition duration-300"></div>
+            <div class="absolute -inset-3 bg-pink-200/60 rounded-full blur-xl group-hover:bg-pink-300/70 transition duration-300"></div>
             
-            <!-- Animated Pet GIF -->
-            <img id="pet-img" 
-                 src="https://media.tenor.com/TK2oQW6ZfQoAAAAi/peach-cat.gif" 
-                 alt="Cute Shy Cat" 
-                 class="relative w-40 h-40 md:w-48 md:h-48 object-contain mx-auto animate-float drop-shadow-md select-none transition-all duration-300"
-                 onerror="this.onerror=null; this.src='https://images.placeholders.dev/?text=🐱+Pretty+Please&shape=circle&bgColor=%23ffccd5&textColor=%23c7254e';"
-            >
+            <!-- White Cat Animated Vector SVG with cute small feet -->
+            <div id="pet-svg-box" class="relative w-44 h-44 md:w-52 md:h-52 mx-auto animate-float transition-all duration-300">
+                <svg id="cat-svg" viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                    <!-- Dynamic Cat content populated by JavaScript -->
+                </svg>
+            </div>
             
             <!-- Cute Speech Bubble Tag on Pet -->
-            <span class="absolute -top-2 -right-2 bg-pink-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md animate-bounce">
+            <span class="absolute -top-1 -right-1 bg-gradient-to-r from-pink-500 to-rose-500 text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-md animate-bounce">
                 Tap me! 💕
             </span>
         </div>
 
         <!-- Dynamic Heading Text -->
-        <h1 id="question-text" class="text-xl md:text-2xl font-bold text-rose-600 my-6 min-h-[60px] flex items-center justify-center leading-snug px-2 transition-all duration-300">
-            Okay... are you still mad at me? 🥺
+        <h1 id="question-text" class="text-xl md:text-2xl font-bold text-rose-600 my-6 min-h-[64px] flex items-center justify-center leading-snug px-2 transition-all duration-300">
+            Okay... are you still angry on me? 🥺
         </h1>
 
         <!-- Action Buttons Container -->
-        <div id="button-group" class="relative flex flex-col sm:flex-row items-center justify-center gap-4 mt-4 min-h-[120px] w-full">
+        <div id="button-group" class="relative flex flex-col sm:flex-row items-center justify-center gap-4 mt-2 min-h-[130px] w-full">
             
-            <!-- YES BUTTON (Pill shape, Emerald Green) -->
-            <button id="yes-btn" 
-                    class="btn-bounce bg-emerald-400 hover:bg-emerald-500 active:scale-95 text-white font-bold py-3.5 px-8 rounded-full shadow-lg shadow-emerald-200/80 text-lg md:text-xl z-20 flex items-center justify-center gap-2 border-2 border-emerald-300 w-full sm:w-auto">
-                <span>YES</span> 💖
+            <!-- BUTTON A (Starts as "YES - Still Angry" [Pink/Rose], switches to "YES - Forgive" [Green]) -->
+            <button id="btn-a" 
+                    class="btn-bounce bg-rose-500 hover:bg-rose-600 active:scale-95 text-white font-bold py-3.5 px-8 rounded-full shadow-lg shadow-rose-200/80 text-lg md:text-xl z-20 flex items-center justify-center gap-2 border-2 border-rose-400 w-full sm:w-auto">
+                <span id="btn-a-text">YES</span> 💔
             </button>
 
-            <!-- NO BUTTON (Pill shape, Rose Red) -->
-            <button id="no-btn" 
-                    class="btn-bounce bg-rose-500 hover:bg-rose-600 active:scale-95 text-white font-bold py-3.5 px-8 rounded-full shadow-lg shadow-rose-200/80 text-lg md:text-xl z-10 flex items-center justify-center gap-2 border-2 border-rose-400 w-full sm:w-auto">
-                <span id="no-btn-text">NO</span> 💔
+            <!-- BUTTON B (Starts as "NO - Not Angry" [Green], switches to "NO - Still Refuse" [Rose]) -->
+            <button id="btn-b" 
+                    class="btn-bounce bg-emerald-400 hover:bg-emerald-500 active:scale-95 text-white font-bold py-3.5 px-8 rounded-full shadow-lg shadow-emerald-200/80 text-lg md:text-xl z-10 flex items-center justify-center gap-2 border-2 border-emerald-300 w-full sm:w-auto">
+                <span id="btn-b-text">NO</span> 💖
             </button>
         </div>
     </main>
 
     <!-- GIFT PAGE SCREEN (Hidden Initially) -->
-    <main id="gift-card" class="hidden relative z-10 w-full max-w-2xl bg-white/85 backdrop-blur-md rounded-3xl p-6 md:p-10 text-center cute-shadow border-2 border-pink-200 my-auto">
+    <main id="gift-card" class="hidden relative z-10 w-full max-w-2xl bg-white/90 backdrop-blur-md rounded-3xl p-6 md:p-10 text-center cute-shadow border-2 border-pink-200 my-auto">
         
         <!-- Celebration Header -->
         <div class="space-y-2 mb-6">
             <h1 class="text-2xl md:text-4xl font-extrabold text-rose-600 animate-bounce tracking-wide">
-                I knew you'd say yes 💕
+                I knew we'd be good again! 💖
             </h1>
             <p class="text-rose-400 font-medium text-sm md:text-base">
-                Thank you for forgiving me! Here are some special gifts for you ✨
+                Thank you for forgiving me! Here are special appreciation passes created just for you ✨
             </p>
         </div>
 
-        <!-- Celebration Pet GIF -->
-        <div class="relative inline-block mb-8">
-            <div class="absolute -inset-3 bg-pink-300/40 rounded-full blur-xl animate-pulse"></div>
-            <img id="happy-pet-img" 
-                 src="https://media.tenor.com/9v83r-FkZroAAAAi/peach-cat-kiss.gif" 
-                 alt="Happy Celebration Cat" 
-                 class="relative w-44 h-44 md:w-56 md:h-56 object-contain mx-auto drop-shadow-lg"
-                 onerror="this.onerror=null; this.src='https://images.placeholders.dev/?text=🥰+Thank+You!&shape=circle&bgColor=%23ffccd5&textColor=%23c7254e';"
-            >
+        <!-- Celebration Pet Vector SVG with cute small feet -->
+        <div class="relative inline-block mb-6 cursor-pointer" onclick="spawnHearts(event.clientX, event.clientY, 12)">
+            <div class="absolute -inset-3 bg-pink-300/50 rounded-full blur-xl animate-pulse"></div>
+            <div class="relative w-40 h-40 md:w-48 md:h-48 mx-auto drop-shadow-lg">
+                <svg viewBox="0 0 200 200" class="w-full h-full">
+                    <!-- Ears -->
+                    <path d="M 45,65 Q 25,20 65,42" fill="#fff" stroke="#222" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M 47,60 Q 33,28 61,43" fill="#fbcfe8"/>
+                    <path d="M 155,65 Q 175,20 135,42" fill="#fff" stroke="#222" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M 153,60 Q 167,28 139,43" fill="#fbcfe8"/>
+
+                    <!-- Head/Body -->
+                    <ellipse cx="100" cy="85" rx="58" ry="48" fill="#fff" stroke="#222" stroke-width="4.5"/>
+                    <path d="M 60,115 Q 60,165 100,165 Q 140,165 140,115 Z" fill="#fff" stroke="#222" stroke-width="4.5"/>
+
+                    <!-- CUTE SMALL FEET AT THE BOTTOM WITH TOE BEANS -->
+                    <ellipse cx="78" cy="165" rx="14" ry="9" fill="#fff" stroke="#222" stroke-width="3.5"/>
+                    <ellipse cx="78" cy="166" rx="6" ry="4" fill="#ff85a1"/>
+                    
+                    <ellipse cx="122" cy="165" rx="14" ry="9" fill="#fff" stroke="#222" stroke-width="3.5"/>
+                    <ellipse cx="122" cy="166" rx="6" ry="4" fill="#ff85a1"/>
+
+                    <!-- Happy Eyes (Squinting arches) -->
+                    <path d="M 68,78 Q 78,68 88,78" fill="none" stroke="#222" stroke-width="4" stroke-linecap="round"/>
+                    <path d="M 112,78 Q 122,68 132,78" fill="none" stroke="#222" stroke-width="4" stroke-linecap="round"/>
+
+                    <!-- Blushing Cheeks -->
+                    <ellipse cx="68" cy="90" rx="12" ry="7" fill="#ff85a1" opacity="0.85"/>
+                    <path d="M 62,87 L 66,93 M 68,87 L 72,93" stroke="#be123c" stroke-width="2"/>
+                    
+                    <ellipse cx="132" cy="90" rx="12" ry="7" fill="#ff85a1" opacity="0.85"/>
+                    <path d="M 126,87 L 130,93 M 132,87 L 136,93" stroke="#be123c" stroke-width="2"/>
+
+                    <!-- Cute Mouth -->
+                    <path d="M 93,86 Q 100,92 107,86" fill="none" stroke="#222" stroke-width="3.5" stroke-linecap="round"/>
+
+                    <!-- Holding Giant Pink Heart -->
+                    <path d="M 100,110 C 100,85 65,80 65,110 C 65,135 100,152 100,152 C 100,152 135,135 135,110 C 135,80 100,85 100,110 Z" fill="#f43f5e" stroke="#9f1239" stroke-width="3.5"/>
+                    <path d="M 75,98 C 70,102 72,112 80,112" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+
+                    <!-- Paws hugging heart -->
+                    <ellipse cx="65" cy="118" rx="10" ry="12" fill="#fff" stroke="#222" stroke-width="3.5"/>
+                    <ellipse cx="135" cy="118" rx="10" ry="12" fill="#fff" stroke="#222" stroke-width="3.5"/>
+
+                    <!-- Floating little hearts -->
+                    <path d="M 30,50 Q 20,35 30,25 Q 40,35 30,50" fill="#fb7185"/>
+                    <path d="M 170,45 Q 160,30 170,20 Q 180,30 170,45" fill="#fb7185"/>
+                </svg>
+            </div>
         </div>
 
         <!-- Interactive Gift Cards Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 w-full">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-5 w-full">
             
-            <!-- GIFT 1 CARD -->
-            <div class="gift-card perspective-1000 h-48 cursor-pointer" onclick="openGiftCard(this, 1)">
+            <!-- GIFT 1 CARD: MIND & WISDOM -->
+            <div class="gift-card perspective-1000 h-52 cursor-pointer" onclick="openGiftModal(1)">
                 <div class="gift-card-inner relative w-full h-full rounded-2xl gift-shadow border-2 border-pink-200">
-                    
                     <!-- Front Cover -->
-                    <div class="gift-front absolute inset-0 bg-gradient-to-br from-pink-300 to-rose-300 rounded-2xl flex flex-col items-center justify-center p-4 text-white">
-                        <span class="text-5xl mb-2 animate-bounce">🎁</span>
-                        <span class="font-bold text-lg tracking-wider">GIFT 1</span>
-                        <span class="text-xs opacity-90 mt-1 bg-white/20 px-3 py-1 rounded-full">Tap to open</span>
+                    <div class="gift-front absolute inset-0 bg-gradient-to-br from-pink-300 via-rose-300 to-pink-400 rounded-2xl flex flex-col items-center justify-center p-4 text-white">
+                        <span class="text-4xl mb-2 animate-bounce">🧠</span>
+                        <span class="font-bold text-base tracking-wider">GIFT #1</span>
+                        <span class="text-xs font-semibold opacity-90 mt-1 bg-white/25 px-3 py-1 rounded-full">Brilliant Mind</span>
                     </div>
-
-                    <!-- Back Revealed Content -->
+                    <!-- Back Cover -->
                     <div class="gift-back absolute inset-0 bg-gradient-to-br from-rose-50 to-pink-100 rounded-2xl flex flex-col items-center justify-center p-4 text-rose-700 border-2 border-rose-300">
-                        <span class="text-3xl mb-1">🫂</span>
-                        <h3 class="font-bold text-base leading-tight">Unlimited Hugs & Kisses</h3>
-                        <p class="text-xs text-rose-500 mt-2 font-medium">Valid anytime, anywhere! Expiration: Never 💕</p>
-                        <span class="mt-3 text-[10px] uppercase font-bold bg-rose-500 text-white px-2.5 py-1 rounded-full">Claimed 🎟️</span>
+                        <span class="text-3xl mb-1">💡</span>
+                        <h3 class="font-bold text-sm leading-snug">Mind & Wisdom Pass</h3>
+                        <p class="text-[11px] text-rose-500 mt-1">Tap to claim voucher ✨</p>
                     </div>
-
                 </div>
             </div>
 
-            <!-- GIFT 2 CARD -->
-            <div class="gift-card perspective-1000 h-48 cursor-pointer" onclick="openGiftCard(this, 2)">
+            <!-- GIFT 2 CARD: LOOKS & BEAUTY -->
+            <div class="gift-card perspective-1000 h-52 cursor-pointer" onclick="openGiftModal(2)">
                 <div class="gift-card-inner relative w-full h-full rounded-2xl gift-shadow border-2 border-pink-200">
-                    
                     <!-- Front Cover -->
-                    <div class="gift-front absolute inset-0 bg-gradient-to-br from-pink-300 to-rose-300 rounded-2xl flex flex-col items-center justify-center p-4 text-white">
-                        <span class="text-5xl mb-2 animate-bounce" style="animation-delay: 0.2s">🧋</span>
-                        <span class="font-bold text-lg tracking-wider">GIFT 2</span>
-                        <span class="text-xs opacity-90 mt-1 bg-white/20 px-3 py-1 rounded-full">Tap to open</span>
+                    <div class="gift-front absolute inset-0 bg-gradient-to-br from-pink-300 via-rose-300 to-pink-400 rounded-2xl flex flex-col items-center justify-center p-4 text-white">
+                        <span class="text-4xl mb-2 animate-bounce" style="animation-delay: 0.15s">✨</span>
+                        <span class="font-bold text-base tracking-wider">GIFT #2</span>
+                        <span class="text-xs font-semibold opacity-90 mt-1 bg-white/25 px-3 py-1 rounded-full">Absolute Stunner</span>
                     </div>
-
-                    <!-- Back Revealed Content -->
+                    <!-- Back Cover -->
                     <div class="gift-back absolute inset-0 bg-gradient-to-br from-rose-50 to-pink-100 rounded-2xl flex flex-col items-center justify-center p-4 text-rose-700 border-2 border-rose-300">
-                        <span class="text-3xl mb-1">🍨</span>
-                        <h3 class="font-bold text-base leading-tight">Boba / Dessert On Me</h3>
-                        <p class="text-xs text-rose-500 mt-2 font-medium">You pick the spot & order whatever you want! 😋</p>
-                        <span class="mt-3 text-[10px] uppercase font-bold bg-rose-500 text-white px-2.5 py-1 rounded-full">Claimed 🎟️</span>
+                        <span class="text-3xl mb-1">👑</span>
+                        <h3 class="font-bold text-sm leading-snug">Absolute Stunner Pass</h3>
+                        <p class="text-[11px] text-rose-500 mt-1">Tap to claim voucher ✨</p>
                     </div>
-
                 </div>
             </div>
 
-            <!-- GIFT 3 CARD -->
-            <div class="gift-card perspective-1000 h-48 cursor-pointer" onclick="openGiftCard(this, 3)">
+            <!-- GIFT 3 CARD: BESTIE VIBE -->
+            <div class="gift-card perspective-1000 h-52 cursor-pointer" onclick="openGiftModal(3)">
                 <div class="gift-card-inner relative w-full h-full rounded-2xl gift-shadow border-2 border-pink-200">
-                    
                     <!-- Front Cover -->
-                    <div class="gift-front absolute inset-0 bg-gradient-to-br from-pink-300 to-rose-300 rounded-2xl flex flex-col items-center justify-center p-4 text-white">
-                        <span class="text-5xl mb-2 animate-bounce" style="animation-delay: 0.4s">🍿</span>
-                        <span class="font-bold text-lg tracking-wider">GIFT 3</span>
-                        <span class="text-xs opacity-90 mt-1 bg-white/20 px-3 py-1 rounded-full">Tap to open</span>
+                    <div class="gift-front absolute inset-0 bg-gradient-to-br from-pink-300 via-rose-300 to-pink-400 rounded-2xl flex flex-col items-center justify-center p-4 text-white">
+                        <span class="text-4xl mb-2 animate-bounce" style="animation-delay: 0.3s">💖</span>
+                        <span class="font-bold text-base tracking-wider">GIFT #3</span>
+                        <span class="text-xs font-semibold opacity-90 mt-1 bg-white/25 px-3 py-1 rounded-full">Golden Vibe</span>
                     </div>
-
-                    <!-- Back Revealed Content -->
+                    <!-- Back Cover -->
                     <div class="gift-back absolute inset-0 bg-gradient-to-br from-rose-50 to-pink-100 rounded-2xl flex flex-col items-center justify-center p-4 text-rose-700 border-2 border-rose-300">
-                        <span class="text-3xl mb-1">🎬</span>
-                        <h3 class="font-bold text-base leading-tight">Movie & Snacks Night</h3>
-                        <p class="text-xs text-rose-500 mt-2 font-medium">You pick the movie, I bring all your favorite snacks! 🍫</p>
-                        <span class="mt-3 text-[10px] uppercase font-bold bg-rose-500 text-white px-2.5 py-1 rounded-full">Claimed 🎟️</span>
+                        <span class="text-3xl mb-1">🍿</span>
+                        <h3 class="font-bold text-sm leading-snug">Bestie Vibe Pass</h3>
+                        <p class="text-[11px] text-rose-500 mt-1">Tap to claim voucher ✨</p>
                     </div>
-
                 </div>
             </div>
 
@@ -262,46 +301,90 @@
 
         <!-- Replay / Back Button -->
         <button onclick="resetApp()" class="mt-8 text-rose-400 hover:text-rose-600 text-xs font-semibold underline underline-offset-4 opacity-80 hover:opacity-100 transition">
-            Start over / Read again 🔄
+            Start over / Re-read 🔄
         </button>
     </main>
 
+    <!-- GIFT DETAIL MODAL POP-UP -->
+    <div id="gift-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-opacity duration-300">
+        <div id="modal-box" class="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full text-center cute-shadow border-2 border-pink-200 relative modal-enter">
+            <!-- Close Button -->
+            <button onclick="closeGiftModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-sm">
+                ✕
+            </button>
+
+            <!-- Modal Content Injected by JavaScript -->
+            <div id="modal-icon" class="text-5xl mb-3">🎁</div>
+            <h2 id="modal-title" class="text-xl font-bold text-rose-600 mb-2">Gift Title</h2>
+            <p id="modal-desc" class="text-xs md:text-sm text-slate-600 leading-relaxed mb-4">Gift description goes here...</p>
+            
+            <div id="modal-perk" class="bg-pink-50 border border-pink-200 rounded-2xl p-3 text-xs text-rose-700 font-semibold mb-6">
+                🎁 PERK: Loading...
+            </div>
+
+            <button onclick="claimVoucher()" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-3 px-6 rounded-full shadow-lg shadow-pink-200 active:scale-95 transition">
+                Claim Voucher 🎟️
+            </button>
+        </div>
+    </div>
+
     <script>
-        // Configuration Stages for "NO" clicks
+        // Application Stage Data (Stage 0 is initial "Are you angry?")
         const STAGES = [
             {
-                text: "Okay... are you still mad at me? 🥺",
-                noBtnText: "NO",
-                petGif: "https://media.tenor.com/TK2oQW6ZfQoAAAAi/peach-cat.gif"
+                question: "Okay... are you still angry on me? 🥺",
+                petState: "shy_covering"
             },
             {
-                text: "Sooo... can we be good again? 👀",
-                noBtnText: "Are you sure?",
-                petGif: "https://media.tenor.com/2s_I3yQ_nS4AAAAi/peach-and-goma.gif"
+                question: "Sooo... can we be good again? 👀",
+                noBtnText: "NO 💔",
+                petState: "pleading"
             },
             {
-                text: "Come on, I said I'm sorryyy 😭",
+                question: "Come on, I said I'm sorryyy 😭",
                 noBtnText: "Think again!",
-                petGif: "https://media.tenor.com/71B9hK2C0JgAAAAi/mochi-pet-peach-cat.gif"
+                petState: "crying"
             },
             {
-                text: "You know you wanna forgive me 😌",
-                noBtnText: "Pookie please...",
-                petGif: "https://media.tenor.com/XU_p5_N34C0AAAAi/peach-goma-crying.gif"
+                question: "You know you wanna forgive me 😌",
+                noBtnText: "Pretty please?",
+                petState: "puppy_eyes"
             },
             {
-                text: "Pretty please with a cherry on top? 🍒🥺",
+                question: "Look how tiny NO is getting! 🤏",
                 noBtnText: "Don't do this 💔",
-                petGif: "https://media.tenor.com/e2oBw7pXzLMAAAAi/peach-and-goma-peach-cat.gif"
+                petState: "dramatic_plea"
             },
             {
-                text: "Look at this face! You can't say no! 🐱❤️",
-                noBtnText: "Just click YES! 👇",
-                petGif: "https://media.tenor.com/C4I-w-3H4mMAAAAi/mochi-cat-love.gif"
+                question: "Pretty please? I miss my bestie! 🥺",
+                noBtnText: "Say YES! 👇",
+                petState: "begging"
             }
         ];
 
-        let stageIndex = 0;
+        // Gifts Dataset (100% Heartfelt Appreciation - Zero money/buying)
+        const GIFTS_DATA = {
+            1: {
+                icon: "🧠",
+                title: "The Brilliant Mind Pass",
+                desc: "Dedicated to your insanely sharp brain! You give the most insightful advice, solve every complication effortlessly, and honestly... you are 100% right almost all the time!",
+                perk: "🎟️ OFFICIAL DECLARATION as the undisputed genius & smartest person in the room!"
+            },
+            2: {
+                icon: "✨",
+                title: "The Absolute Stunner Pass",
+                desc: "An official tribute to your 10/10 main character aesthetic! From your radiant smile and gorgeous hair to your effortless grace, you bring magnetic beauty wherever you step.",
+                perk: "🎟️ LIFETIME VIP PASS confirming your status as an absolute aesthetic icon!"
+            },
+            3: {
+                icon: "💖",
+                title: "The Golden Heart & Bestie Vibe Pass",
+                desc: "For your hilarious humor, pure kindness, loyalty, and unmatched bestie energy! Having you in my life as a sister-friend is an irreplaceable blessing and everything is better when you're around.",
+                perk: "🎟️ UNLIMITED 24/7 priority listening, unconditional support, & endless appreciation!"
+            }
+        };
+
+        let currentStage = 0;
         let yesScale = 1;
         let noScale = 1;
 
@@ -309,13 +392,145 @@
         const apologyCard = document.getElementById('apology-card');
         const giftCard = document.getElementById('gift-card');
         const petContainer = document.getElementById('pet-container');
-        const petImg = document.getElementById('pet-img');
+        const petSvgBox = document.getElementById('pet-svg-box');
+        const catSvg = document.getElementById('cat-svg');
         const questionText = document.getElementById('question-text');
-        const yesBtn = document.getElementById('yes-btn');
-        const noBtn = document.getElementById('no-btn');
-        const noBtnText = document.getElementById('no-btn-text');
+        
+        const btnA = document.getElementById('btn-a');
+        const btnB = document.getElementById('btn-b');
+        const btnAText = document.getElementById('btn-a-text');
+        const btnBText = document.getElementById('btn-b-text');
+        
+        const giftModal = document.getElementById('gift-modal');
+        const modalBox = document.getElementById('modal-box');
+        const modalIcon = document.getElementById('modal-icon');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDesc = document.getElementById('modal-desc');
+        const modalPerk = document.getElementById('modal-perk');
 
-        // Web Audio API for cute interaction sounds without external file dependencies
+        // Function to render custom SVG White Cat with small feet and toe beans
+        function renderCatSvg(state) {
+            let svgContent = '';
+
+            // Base SVG setup (Outer Ears, Head, Cheek hatch lines, Sweat marks, AND CUTE SMALL FEET WITH TOE BEANS AT THE BOTTOM)
+            const baseCatBody = `
+                <!-- Sweat squiggles above head (~ ~) -->
+                <path d="M 42,20 C 47,15 47,25 52,20" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round"/>
+                <path d="M 58,16 C 63,11 63,21 68,16" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round"/>
+                <path d="M 135,16 C 140,11 140,21 145,16" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round"/>
+
+                <!-- Left Ear -->
+                <path d="M 45,65 Q 25,20 65,42" fill="#fff" stroke="#222" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M 47,60 Q 33,28 61,43" fill="#fbcfe8"/>
+
+                <!-- Right Ear -->
+                <path d="M 155,65 Q 175,20 135,42" fill="#fff" stroke="#222" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M 153,60 Q 167,28 139,43" fill="#fbcfe8"/>
+
+                <!-- White Cat Head Base -->
+                <ellipse cx="100" cy="90" rx="58" ry="48" fill="#fff" stroke="#222" stroke-width="4.5"/>
+                <!-- Body Base -->
+                <path d="M 60,120 Q 60,165 100,165 Q 140,165 140,120 Z" fill="#fff" stroke="#222" stroke-width="4.5"/>
+
+                <!-- CUTE SMALL FEET AT THE BOTTOM WITH PINK TOE BEAN PADS -->
+                <ellipse cx="78" cy="165" rx="14" ry="9" fill="#fff" stroke="#222" stroke-width="3.5"/>
+                <ellipse cx="78" cy="166" rx="6" ry="4" fill="#ff85a1"/>
+                
+                <ellipse cx="122" cy="165" rx="14" ry="9" fill="#fff" stroke="#222" stroke-width="3.5"/>
+                <ellipse cx="122" cy="166" rx="6" ry="4" fill="#ff85a1"/>
+
+                <!-- Blushing Cheek Patches -->
+                <ellipse cx="65" cy="98" rx="14" ry="8" fill="#ff85a1" opacity="0.85"/>
+                <path d="M 58,94 L 62,102 M 64,94 L 68,102 M 70,94 L 74,102" stroke="#be123c" stroke-width="2.2" stroke-linecap="round"/>
+
+                <ellipse cx="135" cy="98" rx="14" ry="8" fill="#ff85a1" opacity="0.85"/>
+                <path d="M 128,94 L 132,102 M 134,94 L 138,102 M 140,94 L 144,102" stroke="#be123c" stroke-width="2.2" stroke-linecap="round"/>
+            `;
+
+            if (state === 'shy_covering') {
+                // Exact match to image: Hands covering eyes/cheeks blush
+                svgContent = baseCatBody + `
+                    <!-- Closed Squint Eyes peaking above paws -->
+                    <path d="M 72,76 Q 80,70 88,76" fill="none" stroke="#222" stroke-width="3.5" stroke-linecap="round"/>
+                    <path d="M 112,76 Q 120,70 128,76" fill="none" stroke="#222" stroke-width="3.5" stroke-linecap="round"/>
+
+                    <!-- Open Tiny Pink Mouth peaking -->
+                    <path d="M 94,88 Q 100,94 106,88 Z" fill="#ff4d6d" stroke="#222" stroke-width="2.5"/>
+
+                    <!-- Paws covering cheeks & face -->
+                    <!-- Left Paw -->
+                    <path d="M 68,125 C 62,110 68,88 88,90 C 96,91 94,105 88,118 Z" fill="#fff" stroke="#222" stroke-width="4" stroke-linejoin="round"/>
+                    <path d="M 76,92 L 76,102 M 83,93 L 83,103" stroke="#222" stroke-width="2.5" stroke-linecap="round"/>
+
+                    <!-- Right Paw -->
+                    <path d="M 132,125 C 138,110 132,88 112,90 C 104,91 106,105 112,118 Z" fill="#fff" stroke="#222" stroke-width="4" stroke-linejoin="round"/>
+                    <path d="M 124,92 L 124,102 M 117,93 L 117,103" stroke="#222" stroke-width="2.5" stroke-linecap="round"/>
+                `;
+            } else if (state === 'pleading') {
+                // Pleading eyes
+                svgContent = baseCatBody + `
+                    <!-- Big Pleading Eyes -->
+                    <circle cx="78" cy="85" r="10" fill="#222"/>
+                    <circle cx="75" cy="82" r="3.5" fill="#fff"/>
+                    <circle cx="81" cy="88" r="1.8" fill="#fff"/>
+
+                    <circle cx="122" cy="85" r="10" fill="#222"/>
+                    <circle cx="119" cy="82" r="3.5" fill="#fff"/>
+                    <circle cx="125" cy="88" r="1.8" fill="#fff"/>
+
+                    <!-- Pouting Mouth -->
+                    <path d="M 94,98 Q 100,93 106,98" fill="none" stroke="#222" stroke-width="3.5" stroke-linecap="round"/>
+
+                    <!-- Clasped Paws -->
+                    <ellipse cx="100" cy="118" rx="14" ry="10" fill="#fff" stroke="#222" stroke-width="4"/>
+                    <path d="M 96,113 L 96,123 M 104,113 L 104,123" stroke="#222" stroke-width="2.5"/>
+                `;
+            } else if (state === 'crying') {
+                // Crying eyes (> <) with tears
+                svgContent = baseCatBody + `
+                    <!-- Crying Eyes (> <) -->
+                    <path d="M 70,80 L 85,86 L 70,92" fill="none" stroke="#222" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M 130,80 L 115,86 L 130,92" fill="none" stroke="#222" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+                    <!-- Teardrops -->
+                    <path d="M 62,92 Q 52,110 60,125 Q 70,110 62,92 Z" fill="#38bdf8" opacity="0.85" stroke="#0284c7" stroke-width="2"/>
+                    <path d="M 138,92 Q 148,110 140,125 Q 130,110 138,92 Z" fill="#38bdf8" opacity="0.85" stroke="#0284c7" stroke-width="2"/>
+
+                    <!-- Open Crying Mouth -->
+                    <ellipse cx="100" cy="100" rx="12" ry="10" fill="#222"/>
+                    <path d="M 92,102 Q 100,110 108,102 Z" fill="#ff4d6d"/>
+
+                    <!-- Paws on cheeks -->
+                    <circle cx="68" cy="122" r="10" fill="#fff" stroke="#222" stroke-width="3.5"/>
+                    <circle cx="132" cy="122" r="10" fill="#fff" stroke="#222" stroke-width="3.5"/>
+                `;
+            } else if (state === 'puppy_eyes' || state === 'dramatic_plea' || state === 'begging') {
+                // Sparkle puppy eyes
+                svgContent = baseCatBody + `
+                    <!-- Extra Big Sparkle Eyes -->
+                    <circle cx="76" cy="84" r="13" fill="#222"/>
+                    <circle cx="71" cy="80" r="5" fill="#fff"/>
+                    <circle cx="81" cy="89" r="2.5" fill="#fff"/>
+
+                    <circle cx="124" cy="84" r="13" fill="#222"/>
+                    <circle cx="119" cy="80" r="5" fill="#fff"/>
+                    <circle cx="129" cy="89" r="2.5" fill="#fff"/>
+
+                    <!-- Wavy Sad Mouth -->
+                    <path d="M 92,100 C 96,96 100,102 104,96 C 108,102 110,98 112,100" fill="none" stroke="#222" stroke-width="3.5" stroke-linecap="round"/>
+
+                    <!-- Begging Paws up -->
+                    <path d="M 85,125 C 80,105 95,100 95,115 Z" fill="#fff" stroke="#222" stroke-width="3.5"/>
+                    <path d="M 115,125 C 120,105 105,100 105,115 Z" fill="#fff" stroke="#222" stroke-width="3.5"/>
+                `;
+            }
+
+            catSvg.innerHTML = svgContent;
+        }
+
+        // Render initial pet expression
+        renderCatSvg('shy_covering');
+
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
         function playCuteSound(type) {
@@ -331,59 +546,54 @@
             const now = audioCtx.currentTime;
 
             if (type === 'pop') {
-                // High sweet pop tone
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(400, now);
-                osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
-                gain.gain.setValueAtTime(0.3, now);
+                osc.frequency.setValueAtTime(350, now);
+                osc.frequency.exponentialRampToValueAtTime(700, now + 0.08);
+                gain.gain.setValueAtTime(0.25, now);
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
                 osc.start(now);
                 osc.stop(now + 0.08);
             } else if (type === 'chime') {
-                // Pet tap chime
                 osc.type = 'triangle';
-                osc.frequency.setValueAtTime(523.25, now); // C5
-                osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
-                osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.08);
+                osc.frequency.setValueAtTime(783.99, now + 0.16);
                 gain.gain.setValueAtTime(0.2, now);
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
                 osc.start(now);
                 osc.stop(now + 0.35);
             } else if (type === 'fanfare') {
-                // Arpeggio when clicking YES
-                const notes = [523.25, 659.25, 783.99, 1046.50]; // C, E, G, C6
+                const notes = [523.25, 659.25, 783.99, 1046.50];
                 notes.forEach((freq, idx) => {
                     const noteOsc = audioCtx.createOscillator();
                     const noteGain = audioCtx.createGain();
                     noteOsc.type = 'sine';
-                    noteOsc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                    noteOsc.frequency.setValueAtTime(freq, now + idx * 0.07);
                     noteOsc.connect(noteGain);
                     noteGain.connect(audioCtx.destination);
                     
-                    noteGain.gain.setValueAtTime(0.2, now + idx * 0.08);
-                    noteGain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.3);
+                    noteGain.gain.setValueAtTime(0.2, now + idx * 0.07);
+                    noteGain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.07 + 0.3);
                     
-                    noteOsc.start(now + idx * 0.08);
-                    noteOsc.stop(now + idx * 0.08 + 0.3);
+                    noteOsc.start(now + idx * 0.07);
+                    noteOsc.stop(now + idx * 0.07 + 0.3);
                 });
             }
         }
 
         function spawnHearts(x, y, count = 6) {
-            const hearts = ['💖', '💕', '🌸', '✨', '🥺', '💗'];
+            const hearts = ['💖', '💕', '✨', '🥺', '🌸', '💗', '🎀'];
             for (let i = 0; i < count; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle-heart';
                 particle.innerText = hearts[Math.floor(Math.random() * hearts.length)];
                 
-                // Position near click point
                 particle.style.left = `${x || window.innerWidth / 2}px`;
                 particle.style.top = `${y || window.innerHeight / 2}px`;
 
-                // Random translation trajectory
-                const targetX = (Math.random() - 0.5) * 160;
-                const targetY = -80 - Math.random() * 100;
-                const rotate = (Math.random() - 0.5) * 60;
+                const targetX = (Math.random() - 0.5) * 180;
+                const targetY = -90 - Math.random() * 110;
+                const rotate = (Math.random() - 0.5) * 70;
 
                 particle.style.setProperty('--tw-x', `${targetX}px`);
                 particle.style.setProperty('--tw-y', `${targetY}px`);
@@ -391,69 +601,43 @@
 
                 document.body.appendChild(particle);
 
-                setTimeout(() => particle.remove(), 1200);
+                setTimeout(() => particle.remove(), 1300);
             }
         }
 
-        // Pet Tap / Click Reaction
+        // Pet Tap Reaction
         petContainer.addEventListener('click', (e) => {
             playCuteSound('chime');
             
-            // Trigger wiggle animation
-            petImg.classList.remove('animate-float', 'pet-wiggle');
-            void petImg.offsetWidth; // Reflow trigger
-            petImg.classList.add('pet-wiggle');
+            petSvgBox.classList.remove('animate-float', 'pet-wiggle');
+            void petSvgBox.offsetWidth; // Trigger reflow
+            petSvgBox.classList.add('pet-wiggle');
 
             setTimeout(() => {
-                petImg.classList.remove('pet-wiggle');
-                petImg.classList.add('animate-float');
+                petSvgBox.classList.remove('pet-wiggle');
+                petSvgBox.classList.add('animate-float');
             }, 500);
 
-            // Spawn hearts around pet
-            const rect = petImg.getBoundingClientRect();
+            const rect = petSvgBox.getBoundingClientRect();
             spawnHearts(rect.left + rect.width / 2, rect.top + rect.height / 2, 8);
         });
 
-        // "NO" Button Click Event
-        noBtn.addEventListener('click', (e) => {
-            playCuteSound('pop');
-            stageIndex++;
-
-            // Get current stage info or stay on last stage
-            const currentStage = STAGES[Math.min(stageIndex, STAGES.length - 1)];
-
-            // Update Text and Pet Image
-            questionText.innerText = currentStage.text;
-            noBtnText.innerText = currentStage.noBtnText;
-            petImg.src = currentStage.petGif;
-
-            // Scale YES button larger, shrink NO button smaller
-            yesScale += 0.35;
-            noScale = Math.max(0.3, noScale - 0.15);
-
-            yesBtn.style.transform = `scale(${yesScale})`;
-            noBtn.style.transform = `scale(${noScale})`;
-
-            // Spawn hearts on click location
-            spawnHearts(e.clientX, e.clientY, 4);
-        });
-
-        // "YES" Button Click Event
-        yesBtn.addEventListener('click', (e) => {
+        // Transition to Gifts Page
+        function goToGifts() {
             playCuteSound('fanfare');
             
-            // Grand Heart Burst
-            for (let i = 0; i < 25; i++) {
+            // Grand Heart Explosion
+            for (let i = 0; i < 28; i++) {
                 setTimeout(() => {
                     spawnHearts(
                         Math.random() * window.innerWidth,
                         Math.random() * window.innerHeight,
                         2
                     );
-                }, i * 40);
+                }, i * 35);
             }
 
-            // Smooth Transition from Apology Card to Gift Card
+            // Transition from Apology Card to Gift Page
             apologyCard.style.opacity = '0';
             apologyCard.style.transform = 'scale(0.8)';
 
@@ -469,33 +653,125 @@
                     giftCard.style.transform = 'scale(1)';
                 });
             }, 400);
+        }
+
+        // BUTTON A CLICK HANDLER
+        btnA.addEventListener('click', (e) => {
+            playCuteSound('pop');
+
+            if (currentStage === 0) {
+                // STAGE 0: Question = "Are you still angry on me?"
+                // Button A = "YES" (Meaning: Yes, still angry) -> Move to Stage 1!
+                currentStage = 1;
+
+                // Update UI to Stage 1
+                const stageData = STAGES[1];
+                questionText.innerText = stageData.question;
+                renderCatSvg(stageData.petState);
+
+                // RECONFIGURE BUTTON ROLES FOR STAGE 1+:
+                // Button A becomes Green "YES" (Forgive)
+                btnA.className = "btn-bounce bg-emerald-400 hover:bg-emerald-500 active:scale-95 text-white font-bold py-3.5 px-8 rounded-full shadow-lg shadow-emerald-200/80 text-lg md:text-xl z-20 flex items-center justify-center gap-2 border-2 border-emerald-300 w-full sm:w-auto";
+                btnAText.innerText = "YES";
+                btnA.innerHTML = '<span id="btn-a-text">YES</span> 💖';
+
+                // Button B becomes Rose "NO" (Refuse)
+                btnB.className = "btn-bounce bg-rose-500 hover:bg-rose-600 active:scale-95 text-white font-bold py-3.5 px-8 rounded-full shadow-lg shadow-rose-200/80 text-lg md:text-xl z-10 flex items-center justify-center gap-2 border-2 border-rose-400 w-full sm:w-auto";
+                btnBText.innerText = stageData.noBtnText;
+                btnB.innerHTML = `<span id="btn-b-text">${stageData.noBtnText}</span> 💔`;
+
+                spawnHearts(e.clientX, e.clientY, 5);
+            } else {
+                // STAGE 1+: Button A is now Green "YES" (Forgive me)
+                goToGifts();
+            }
         });
 
-        // Gift Card Opening Handler
-        function openGiftCard(cardElement, giftId) {
-            if (!cardElement.classList.contains('opened')) {
-                playCuteSound('chime');
-                cardElement.classList.add('opened');
+        // BUTTON B CLICK HANDLER
+        btnB.addEventListener('click', (e) => {
+            playCuteSound('pop');
 
-                const rect = cardElement.getBoundingClientRect();
-                spawnHearts(rect.left + rect.width / 2, rect.top + rect.height / 2, 10);
+            if (currentStage === 0) {
+                // STAGE 0: Question = "Are you still angry on me?"
+                // Button B = "NO" (Meaning: No, not angry!) -> GO STRAIGHT TO GIFTS!
+                goToGifts();
+            } else {
+                // STAGE 1+: Button B is "NO" (Refusing forgiveness) -> Escalate refusal!
+                currentStage++;
+                const stageData = STAGES[Math.min(currentStage, STAGES.length - 1)];
+
+                questionText.innerText = stageData.question;
+                document.getElementById('btn-b-text').innerText = stageData.noBtnText;
+                renderCatSvg(stageData.petState);
+
+                // Scale YES button bigger, shrink NO button smaller
+                yesScale += 0.38;
+                noScale = Math.max(0.28, noScale - 0.14);
+
+                btnA.style.transform = `scale(${yesScale})`;
+                btnB.style.transform = `scale(${noScale})`;
+
+                spawnHearts(e.clientX, e.clientY, 5);
+            }
+        });
+
+        // Modal functions
+        function openGiftModal(id) {
+            playCuteSound('chime');
+            const data = GIFTS_DATA[id];
+            if (!data) return;
+
+            modalIcon.innerText = data.icon;
+            modalTitle.innerText = data.title;
+            modalDesc.innerText = data.desc;
+            modalPerk.innerText = data.perk;
+
+            giftModal.classList.remove('hidden');
+            setTimeout(() => {
+                modalBox.classList.add('modal-enter-active');
+            }, 10);
+
+            const cards = document.querySelectorAll('.gift-card');
+            if (cards[id - 1]) {
+                cards[id - 1].classList.add('opened');
             }
         }
 
+        function closeGiftModal() {
+            playCuteSound('pop');
+            modalBox.classList.remove('modal-enter-active');
+            setTimeout(() => {
+                giftModal.classList.add('hidden');
+            }, 200);
+        }
+
+        function claimVoucher() {
+            playCuteSound('fanfare');
+            const rect = modalBox.getBoundingClientRect();
+            spawnHearts(rect.left + rect.width / 2, rect.top + rect.height / 2, 12);
+            closeGiftModal();
+        }
+
         function resetApp() {
-            stageIndex = 0;
+            currentStage = 0;
             yesScale = 1;
             noScale = 1;
 
-            yesBtn.style.transform = 'scale(1)';
-            noBtn.style.transform = 'scale(1)';
+            btnA.style.transform = 'scale(1)';
+            btnB.style.transform = 'scale(1)';
 
             const initialStage = STAGES[0];
-            questionText.innerText = initialStage.text;
-            noBtnText.innerText = initialStage.noBtnText;
-            petImg.src = initialStage.petGif;
+            questionText.innerText = initialStage.question;
+            
+            // Revert Stage 0 Buttons
+            btnA.className = "btn-bounce bg-rose-500 hover:bg-rose-600 active:scale-95 text-white font-bold py-3.5 px-8 rounded-full shadow-lg shadow-rose-200/80 text-lg md:text-xl z-20 flex items-center justify-center gap-2 border-2 border-rose-400 w-full sm:w-auto";
+            btnA.innerHTML = '<span id="btn-a-text">YES</span> 💔';
 
-            // Reset Opened Gifts
+            btnB.className = "btn-bounce bg-emerald-400 hover:bg-emerald-500 active:scale-95 text-white font-bold py-3.5 px-8 rounded-full shadow-lg shadow-emerald-200/80 text-lg md:text-xl z-10 flex items-center justify-center gap-2 border-2 border-emerald-300 w-full sm:w-auto";
+            btnB.innerHTML = '<span id="btn-b-text">NO</span> 💖';
+
+            renderCatSvg(initialStage.petState);
+
             document.querySelectorAll('.gift-card').forEach(card => card.classList.remove('opened'));
 
             giftCard.style.opacity = '0';
@@ -507,7 +783,6 @@
             }, 300);
         }
 
-        // Background Heart Floating Animation Engine
         const canvas = document.getElementById('heart-bg');
         const ctx = canvas.getContext('2d');
 
@@ -529,7 +804,7 @@
                 this.y = height + 20 + Math.random() * 50;
                 this.size = Math.random() * 14 + 10;
                 this.speed = Math.random() * 1.2 + 0.6;
-                this.opacity = Math.random() * 0.5 + 0.2;
+                this.opacity = Math.random() * 0.45 + 0.2;
                 this.swing = Math.random() * 2;
                 this.swingSpeed = Math.random() * 0.02 + 0.01;
             }
@@ -548,10 +823,9 @@
                 ctx.save();
                 ctx.translate(this.x, this.y);
                 ctx.globalAlpha = this.opacity;
-                ctx.fillStyle = '#f472b6'; // soft pink
+                ctx.fillStyle = '#f472b6';
                 ctx.beginPath();
                 
-                // Draw heart shape
                 const topCurveHeight = this.size * 0.3;
                 ctx.moveTo(0, topCurveHeight);
                 ctx.bezierCurveTo(0, 0, -this.size / 2, 0, -this.size / 2, topCurveHeight);
@@ -563,7 +837,7 @@
             }
         }
 
-        const heartParticles = Array.from({ length: 22 }, () => new FloatingHeart());
+        const heartParticles = Array.from({ length: 24 }, () => new FloatingHeart());
 
         function animateCanvas() {
             ctx.clearRect(0, 0, width, height);
