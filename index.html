@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>I'm So Sorry! 🥺❤️</title>
+    
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for cute aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Fredoka', 'Quicksand', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fff0f5 0%, #fce4ec 50%, #f8bbd0 100%);
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            overflow-x: hidden;
+        }
+
+        /* Floating background hearts canvas */
+        #heart-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Cute floating animation for elements */
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(2deg); }
+        }
+
+        /* Pet wiggle reaction when tapped */
+        .pet-wiggle {
+            animation: wiggle 0.5s ease-in-out;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.15) rotate(-10deg); }
+            50% { transform: scale(1.2) rotate(10deg); }
+            75% { transform: scale(1.15) rotate(-5deg); }
+        }
+
+        /* Smooth transition for button resizing */
+        .btn-bounce {
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Custom soft shadow glow */
+        .cute-shadow {
+            box-shadow: 0 12px 30px -8px rgba(255, 107, 129, 0.35);
+        }
+
+        .gift-shadow {
+            box-shadow: 0 10px 25px -5px rgba(248, 187, 208, 0.8);
+        }
+
+        /* Gift 3D Flip Card Animation */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+
+        .gift-card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .gift-card.opened .gift-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .gift-front, .gift-back {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .gift-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Heart burst effect particle */
+        .particle-heart {
+            position: fixed;
+            pointer-events: none;
+            animation: floatAndFade 1.2s ease-out forwards;
+            z-index: 9999;
+        }
+
+        @keyframes floatAndFade {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(0.5) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tw-x, 0px), var(--tw-y, -100px)) scale(1.4) rotate(var(--tw-r, 20deg));
+            }
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4 relative min-h-screen text-slate-700">
+
+    <!-- Background Canvas for Continuous Floating Hearts -->
+    <canvas id="heart-bg"></canvas>
+
+    <!-- MAIN APOLOGY SCREEN -->
+    <main id="apology-card" class="relative z-10 w-full max-w-md bg-white/80 backdrop-blur-md rounded-3xl p-6 md:p-8 text-center cute-shadow border-2 border-pink-100 transition-all duration-500 my-auto">
+        
+        <!-- Interactive Pet Container -->
+        <div class="relative inline-block group cursor-pointer" id="pet-container" title="Tap me!">
+            <div class="absolute -inset-2 bg-pink-200/50 rounded-full blur-lg group-hover:bg-pink-300/60 transition duration-300"></div>
+            
+            <!-- Animated Pet GIF -->
+            <img id="pet-img" 
+                 src="https://media.tenor.com/TK2oQW6ZfQoAAAAi/peach-cat.gif" 
+                 alt="Cute Shy Cat" 
+                 class="relative w-40 h-40 md:w-48 md:h-48 object-contain mx-auto animate-float drop-shadow-md select-none transition-all duration-300"
+                 onerror="this.onerror=null; this.src='https://images.placeholders.dev/?text=🐱+Pretty+Please&shape=circle&bgColor=%23ffccd5&textColor=%23c7254e';"
+            >
+            
+            <!-- Cute Speech Bubble Tag on Pet -->
+            <span class="absolute -top-2 -right-2 bg-pink-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md animate-bounce">
+                Tap me! 💕
+            </span>
+        </div>
+
+        <!-- Dynamic Heading Text -->
+        <h1 id="question-text" class="text-xl md:text-2xl font-bold text-rose-600 my-6 min-h-[60px] flex items-center justify-center leading-snug px-2 transition-all duration-300">
+            Okay... are you still mad at me? 🥺
+        </h1>
+
+        <!-- Action Buttons Container -->
+        <div id="button-group" class="relative flex flex-col sm:flex-row items-center justify-center gap-4 mt-4 min-h-[120px] w-full">
+            
+            <!-- YES BUTTON (Pill shape, Emerald Green) -->
+            <button id="yes-btn" 
+                    class="btn-bounce bg-emerald-400 hover:bg-emerald-500 active:scale-95 text-white font-bold py-3.5 px-8 rounded-full shadow-lg shadow-emerald-200/80 text-lg md:text-xl z-20 flex items-center justify-center gap-2 border-2 border-emerald-300 w-full sm:w-auto">
+                <span>YES</span> 💖
+            </button>
+
+            <!-- NO BUTTON (Pill shape, Rose Red) -->
+            <button id="no-btn" 
+                    class="btn-bounce bg-rose-500 hover:bg-rose-600 active:scale-95 text-white font-bold py-3.5 px-8 rounded-full shadow-lg shadow-rose-200/80 text-lg md:text-xl z-10 flex items-center justify-center gap-2 border-2 border-rose-400 w-full sm:w-auto">
+                <span id="no-btn-text">NO</span> 💔
+            </button>
+        </div>
+    </main>
+
+    <!-- GIFT PAGE SCREEN (Hidden Initially) -->
+    <main id="gift-card" class="hidden relative z-10 w-full max-w-2xl bg-white/85 backdrop-blur-md rounded-3xl p-6 md:p-10 text-center cute-shadow border-2 border-pink-200 my-auto">
+        
+        <!-- Celebration Header -->
+        <div class="space-y-2 mb-6">
+            <h1 class="text-2xl md:text-4xl font-extrabold text-rose-600 animate-bounce tracking-wide">
+                I knew you'd say yes 💕
+            </h1>
+            <p class="text-rose-400 font-medium text-sm md:text-base">
+                Thank you for forgiving me! Here are some special gifts for you ✨
+            </p>
+        </div>
+
+        <!-- Celebration Pet GIF -->
+        <div class="relative inline-block mb-8">
+            <div class="absolute -inset-3 bg-pink-300/40 rounded-full blur-xl animate-pulse"></div>
+            <img id="happy-pet-img" 
+                 src="https://media.tenor.com/9v83r-FkZroAAAAi/peach-cat-kiss.gif" 
+                 alt="Happy Celebration Cat" 
+                 class="relative w-44 h-44 md:w-56 md:h-56 object-contain mx-auto drop-shadow-lg"
+                 onerror="this.onerror=null; this.src='https://images.placeholders.dev/?text=🥰+Thank+You!&shape=circle&bgColor=%23ffccd5&textColor=%23c7254e';"
+            >
+        </div>
+
+        <!-- Interactive Gift Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 w-full">
+            
+            <!-- GIFT 1 CARD -->
+            <div class="gift-card perspective-1000 h-48 cursor-pointer" onclick="openGiftCard(this, 1)">
+                <div class="gift-card-inner relative w-full h-full rounded-2xl gift-shadow border-2 border-pink-200">
+                    
+                    <!-- Front Cover -->
+                    <div class="gift-front absolute inset-0 bg-gradient-to-br from-pink-300 to-rose-300 rounded-2xl flex flex-col items-center justify-center p-4 text-white">
+                        <span class="text-5xl mb-2 animate-bounce">🎁</span>
+                        <span class="font-bold text-lg tracking-wider">GIFT 1</span>
+                        <span class="text-xs opacity-90 mt-1 bg-white/20 px-3 py-1 rounded-full">Tap to open</span>
+                    </div>
+
+                    <!-- Back Revealed Content -->
+                    <div class="gift-back absolute inset-0 bg-gradient-to-br from-rose-50 to-pink-100 rounded-2xl flex flex-col items-center justify-center p-4 text-rose-700 border-2 border-rose-300">
+                        <span class="text-3xl mb-1">🫂</span>
+                        <h3 class="font-bold text-base leading-tight">Unlimited Hugs & Kisses</h3>
+                        <p class="text-xs text-rose-500 mt-2 font-medium">Valid anytime, anywhere! Expiration: Never 💕</p>
+                        <span class="mt-3 text-[10px] uppercase font-bold bg-rose-500 text-white px-2.5 py-1 rounded-full">Claimed 🎟️</span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- GIFT 2 CARD -->
+            <div class="gift-card perspective-1000 h-48 cursor-pointer" onclick="openGiftCard(this, 2)">
+                <div class="gift-card-inner relative w-full h-full rounded-2xl gift-shadow border-2 border-pink-200">
+                    
+                    <!-- Front Cover -->
+                    <div class="gift-front absolute inset-0 bg-gradient-to-br from-pink-300 to-rose-300 rounded-2xl flex flex-col items-center justify-center p-4 text-white">
+                        <span class="text-5xl mb-2 animate-bounce" style="animation-delay: 0.2s">🧋</span>
+                        <span class="font-bold text-lg tracking-wider">GIFT 2</span>
+                        <span class="text-xs opacity-90 mt-1 bg-white/20 px-3 py-1 rounded-full">Tap to open</span>
+                    </div>
+
+                    <!-- Back Revealed Content -->
+                    <div class="gift-back absolute inset-0 bg-gradient-to-br from-rose-50 to-pink-100 rounded-2xl flex flex-col items-center justify-center p-4 text-rose-700 border-2 border-rose-300">
+                        <span class="text-3xl mb-1">🍨</span>
+                        <h3 class="font-bold text-base leading-tight">Boba / Dessert On Me</h3>
+                        <p class="text-xs text-rose-500 mt-2 font-medium">You pick the spot & order whatever you want! 😋</p>
+                        <span class="mt-3 text-[10px] uppercase font-bold bg-rose-500 text-white px-2.5 py-1 rounded-full">Claimed 🎟️</span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- GIFT 3 CARD -->
+            <div class="gift-card perspective-1000 h-48 cursor-pointer" onclick="openGiftCard(this, 3)">
+                <div class="gift-card-inner relative w-full h-full rounded-2xl gift-shadow border-2 border-pink-200">
+                    
+                    <!-- Front Cover -->
+                    <div class="gift-front absolute inset-0 bg-gradient-to-br from-pink-300 to-rose-300 rounded-2xl flex flex-col items-center justify-center p-4 text-white">
+                        <span class="text-5xl mb-2 animate-bounce" style="animation-delay: 0.4s">🍿</span>
+                        <span class="font-bold text-lg tracking-wider">GIFT 3</span>
+                        <span class="text-xs opacity-90 mt-1 bg-white/20 px-3 py-1 rounded-full">Tap to open</span>
+                    </div>
+
+                    <!-- Back Revealed Content -->
+                    <div class="gift-back absolute inset-0 bg-gradient-to-br from-rose-50 to-pink-100 rounded-2xl flex flex-col items-center justify-center p-4 text-rose-700 border-2 border-rose-300">
+                        <span class="text-3xl mb-1">🎬</span>
+                        <h3 class="font-bold text-base leading-tight">Movie & Snacks Night</h3>
+                        <p class="text-xs text-rose-500 mt-2 font-medium">You pick the movie, I bring all your favorite snacks! 🍫</p>
+                        <span class="mt-3 text-[10px] uppercase font-bold bg-rose-500 text-white px-2.5 py-1 rounded-full">Claimed 🎟️</span>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Replay / Back Button -->
+        <button onclick="resetApp()" class="mt-8 text-rose-400 hover:text-rose-600 text-xs font-semibold underline underline-offset-4 opacity-80 hover:opacity-100 transition">
+            Start over / Read again 🔄
+        </button>
+    </main>
+
+    <script>
+        // Configuration Stages for "NO" clicks
+        const STAGES = [
+            {
+                text: "Okay... are you still mad at me? 🥺",
+                noBtnText: "NO",
+                petGif: "https://media.tenor.com/TK2oQW6ZfQoAAAAi/peach-cat.gif"
+            },
+            {
+                text: "Sooo... can we be good again? 👀",
+                noBtnText: "Are you sure?",
+                petGif: "https://media.tenor.com/2s_I3yQ_nS4AAAAi/peach-and-goma.gif"
+            },
+            {
+                text: "Come on, I said I'm sorryyy 😭",
+                noBtnText: "Think again!",
+                petGif: "https://media.tenor.com/71B9hK2C0JgAAAAi/mochi-pet-peach-cat.gif"
+            },
+            {
+                text: "You know you wanna forgive me 😌",
+                noBtnText: "Pookie please...",
+                petGif: "https://media.tenor.com/XU_p5_N34C0AAAAi/peach-goma-crying.gif"
+            },
+            {
+                text: "Pretty please with a cherry on top? 🍒🥺",
+                noBtnText: "Don't do this 💔",
+                petGif: "https://media.tenor.com/e2oBw7pXzLMAAAAi/peach-and-goma-peach-cat.gif"
+            },
+            {
+                text: "Look at this face! You can't say no! 🐱❤️",
+                noBtnText: "Just click YES! 👇",
+                petGif: "https://media.tenor.com/C4I-w-3H4mMAAAAi/mochi-cat-love.gif"
+            }
+        ];
+
+        let stageIndex = 0;
+        let yesScale = 1;
+        let noScale = 1;
+
+        // DOM Elements
+        const apologyCard = document.getElementById('apology-card');
+        const giftCard = document.getElementById('gift-card');
+        const petContainer = document.getElementById('pet-container');
+        const petImg = document.getElementById('pet-img');
+        const questionText = document.getElementById('question-text');
+        const yesBtn = document.getElementById('yes-btn');
+        const noBtn = document.getElementById('no-btn');
+        const noBtnText = document.getElementById('no-btn-text');
+
+        // Web Audio API for cute interaction sounds without external file dependencies
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playCuteSound(type) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'pop') {
+                // High sweet pop tone
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            } else if (type === 'chime') {
+                // Pet tap chime
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+                osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                osc.start(now);
+                osc.stop(now + 0.35);
+            } else if (type === 'fanfare') {
+                // Arpeggio when clicking YES
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C, E, G, C6
+                notes.forEach((freq, idx) => {
+                    const noteOsc = audioCtx.createOscillator();
+                    const noteGain = audioCtx.createGain();
+                    noteOsc.type = 'sine';
+                    noteOsc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                    noteOsc.connect(noteGain);
+                    noteGain.connect(audioCtx.destination);
+                    
+                    noteGain.gain.setValueAtTime(0.2, now + idx * 0.08);
+                    noteGain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.3);
+                    
+                    noteOsc.start(now + idx * 0.08);
+                    noteOsc.stop(now + idx * 0.08 + 0.3);
+                });
+            }
+        }
+
+        function spawnHearts(x, y, count = 6) {
+            const hearts = ['💖', '💕', '🌸', '✨', '🥺', '💗'];
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle-heart';
+                particle.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+                
+                // Position near click point
+                particle.style.left = `${x || window.innerWidth / 2}px`;
+                particle.style.top = `${y || window.innerHeight / 2}px`;
+
+                // Random translation trajectory
+                const targetX = (Math.random() - 0.5) * 160;
+                const targetY = -80 - Math.random() * 100;
+                const rotate = (Math.random() - 0.5) * 60;
+
+                particle.style.setProperty('--tw-x', `${targetX}px`);
+                particle.style.setProperty('--tw-y', `${targetY}px`);
+                particle.style.setProperty('--tw-r', `${rotate}deg`);
+
+                document.body.appendChild(particle);
+
+                setTimeout(() => particle.remove(), 1200);
+            }
+        }
+
+        // Pet Tap / Click Reaction
+        petContainer.addEventListener('click', (e) => {
+            playCuteSound('chime');
+            
+            // Trigger wiggle animation
+            petImg.classList.remove('animate-float', 'pet-wiggle');
+            void petImg.offsetWidth; // Reflow trigger
+            petImg.classList.add('pet-wiggle');
+
+            setTimeout(() => {
+                petImg.classList.remove('pet-wiggle');
+                petImg.classList.add('animate-float');
+            }, 500);
+
+            // Spawn hearts around pet
+            const rect = petImg.getBoundingClientRect();
+            spawnHearts(rect.left + rect.width / 2, rect.top + rect.height / 2, 8);
+        });
+
+        // "NO" Button Click Event
+        noBtn.addEventListener('click', (e) => {
+            playCuteSound('pop');
+            stageIndex++;
+
+            // Get current stage info or stay on last stage
+            const currentStage = STAGES[Math.min(stageIndex, STAGES.length - 1)];
+
+            // Update Text and Pet Image
+            questionText.innerText = currentStage.text;
+            noBtnText.innerText = currentStage.noBtnText;
+            petImg.src = currentStage.petGif;
+
+            // Scale YES button larger, shrink NO button smaller
+            yesScale += 0.35;
+            noScale = Math.max(0.3, noScale - 0.15);
+
+            yesBtn.style.transform = `scale(${yesScale})`;
+            noBtn.style.transform = `scale(${noScale})`;
+
+            // Spawn hearts on click location
+            spawnHearts(e.clientX, e.clientY, 4);
+        });
+
+        // "YES" Button Click Event
+        yesBtn.addEventListener('click', (e) => {
+            playCuteSound('fanfare');
+            
+            // Grand Heart Burst
+            for (let i = 0; i < 25; i++) {
+                setTimeout(() => {
+                    spawnHearts(
+                        Math.random() * window.innerWidth,
+                        Math.random() * window.innerHeight,
+                        2
+                    );
+                }, i * 40);
+            }
+
+            // Smooth Transition from Apology Card to Gift Card
+            apologyCard.style.opacity = '0';
+            apologyCard.style.transform = 'scale(0.8)';
+
+            setTimeout(() => {
+                apologyCard.classList.add('hidden');
+                giftCard.classList.remove('hidden');
+                giftCard.style.opacity = '0';
+                giftCard.style.transform = 'scale(0.9)';
+                
+                requestAnimationFrame(() => {
+                    giftCard.style.transition = 'all 0.5s ease-out';
+                    giftCard.style.opacity = '1';
+                    giftCard.style.transform = 'scale(1)';
+                });
+            }, 400);
+        });
+
+        // Gift Card Opening Handler
+        function openGiftCard(cardElement, giftId) {
+            if (!cardElement.classList.contains('opened')) {
+                playCuteSound('chime');
+                cardElement.classList.add('opened');
+
+                const rect = cardElement.getBoundingClientRect();
+                spawnHearts(rect.left + rect.width / 2, rect.top + rect.height / 2, 10);
+            }
+        }
+
+        function resetApp() {
+            stageIndex = 0;
+            yesScale = 1;
+            noScale = 1;
+
+            yesBtn.style.transform = 'scale(1)';
+            noBtn.style.transform = 'scale(1)';
+
+            const initialStage = STAGES[0];
+            questionText.innerText = initialStage.text;
+            noBtnText.innerText = initialStage.noBtnText;
+            petImg.src = initialStage.petGif;
+
+            // Reset Opened Gifts
+            document.querySelectorAll('.gift-card').forEach(card => card.classList.remove('opened'));
+
+            giftCard.style.opacity = '0';
+            setTimeout(() => {
+                giftCard.classList.add('hidden');
+                apologyCard.classList.remove('hidden');
+                apologyCard.style.opacity = '1';
+                apologyCard.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        // Background Heart Floating Animation Engine
+        const canvas = document.getElementById('heart-bg');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        class FloatingHeart {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = height + 20 + Math.random() * 50;
+                this.size = Math.random() * 14 + 10;
+                this.speed = Math.random() * 1.2 + 0.6;
+                this.opacity = Math.random() * 0.5 + 0.2;
+                this.swing = Math.random() * 2;
+                this.swingSpeed = Math.random() * 0.02 + 0.01;
+            }
+
+            update() {
+                this.y -= this.speed;
+                this.swing += this.swingSpeed;
+                this.x += Math.sin(this.swing) * 0.8;
+
+                if (this.y < -30) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = '#f472b6'; // soft pink
+                ctx.beginPath();
+                
+                // Draw heart shape
+                const topCurveHeight = this.size * 0.3;
+                ctx.moveTo(0, topCurveHeight);
+                ctx.bezierCurveTo(0, 0, -this.size / 2, 0, -this.size / 2, topCurveHeight);
+                ctx.bezierCurveTo(-this.size / 2, (this.size + topCurveHeight) / 2, 0, this.size, 0, this.size);
+                ctx.bezierCurveTo(0, this.size, this.size / 2, (this.size + topCurveHeight) / 2, this.size / 2, topCurveHeight);
+                ctx.bezierCurveTo(this.size / 2, 0, 0, 0, 0, topCurveHeight);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        const heartParticles = Array.from({ length: 22 }, () => new FloatingHeart());
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, width, height);
+            heartParticles.forEach(heart => {
+                heart.update();
+                heart.draw();
+            });
+            requestAnimationFrame(animateCanvas);
+        }
+
+        animateCanvas();
+    </script>
+</body>
+</html>
